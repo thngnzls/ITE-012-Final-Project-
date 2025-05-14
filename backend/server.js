@@ -22,11 +22,11 @@ connectCloudinary()
 // middlewares
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-  ? [ 'https://sophistiqueluxe-production.up.railway.app' ] // Correct domain
+  ? [ 'https://sophistiqueluxe-production.up.railway.app' ]
   : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization', 'token'] // Add 'token' header
+  allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 app.use(express.json())
 
@@ -39,7 +39,6 @@ app.use('/api/order',orderRouter)
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
 app.use('/admin', express.static(path.join(__dirname, '../admin/dist')))
 
-// Health check for debugging
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -47,14 +46,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Handle client-side routing for admin panel
 app.get('/admin/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../admin/dist/index.html'));
 });
 
-// Handle client-side routing for frontend (catch-all)
 app.get('*', (req, res) => {
-  // Don't handle API or admin routes here
+  
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
   }

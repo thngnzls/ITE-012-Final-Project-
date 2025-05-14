@@ -10,7 +10,7 @@ const Product = () => {
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
-  const [showSizeChart, setShowSizeChart] = useState(false); // ✅ Add this
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   const fetchProductData = async () => {
     products.map((item) => {
