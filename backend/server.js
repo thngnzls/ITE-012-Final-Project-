@@ -21,7 +21,13 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: '*', // Or specify your domains
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'token'],
+  credentials: true,
+  maxAge: 86400 // Cache preflight requests for 24 hours
+}));
 
 // api endpoints
 app.use('/api/user',userRouter)
