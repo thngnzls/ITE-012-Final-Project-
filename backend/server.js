@@ -40,8 +40,8 @@ app.get('/admin*', (req, res) => {
     res.sendFile(path.join(__dirname, '../admin/dist/index.html'))
 })
 
-// app.get('/',(req,res)=>{
-//     res.send("API Working")
-// })
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))
