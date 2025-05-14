@@ -1,0 +1,13 @@
+{
+  "name": "sophistiqueluxe",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": ["frontend", "admin", "backend"],
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build:frontend": "cd frontend && npm run build",
+    "build:admin": "cd admin && npm run build",
+    "build": "npm run build:frontend && npm run build:admin"
+  }
+}
