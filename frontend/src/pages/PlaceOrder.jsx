@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 const PlaceOrder = () => {
 
     const [method, setMethod] = useState('cod');
-    const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
+    const { navigate, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',

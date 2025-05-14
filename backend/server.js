@@ -22,11 +22,11 @@ connectCloudinary()
 // middlewares
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-  ? [ 'https://motoswift-ecommerce-production.up.railway.app' ]
+  ? [ 'https://sophistiqueluxe-production.up.railway.app' ] // Correct domain
   : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'token'] // Add 'token' header
 }));
 app.use(express.json())
 
@@ -36,19 +36,28 @@ app.use('/api/product',productRouter)
 app.use('/api/cart',cartRouter)
 app.use('/api/order',orderRouter)
 
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
-app.use('/admin', express.static(path.join(__dirname, '../admin/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')))
+app.use('/admin', express.static(path.join(__dirname, '../admin/dist')))
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'))
-})
+// Health check for debugging
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    time: new Date().toISOString() 
+  });
+});
 
-app.get('/admin*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../admin/dist/index.html'))
-})
+// Handle client-side routing for admin panel
+app.get('/admin/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../admin/dist/index.html'));
+});
 
+// Handle client-side routing for frontend (catch-all)
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  // Don't handle API or admin routes here
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  }
 });
 
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))
