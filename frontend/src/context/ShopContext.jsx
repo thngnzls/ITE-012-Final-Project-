@@ -124,16 +124,52 @@ const ShopContextProvider = (props) => {
         }
     }
 
-    const getUserCart = async ( token ) => {
+    // const getUserCart = async ( token ) => {
+    //     try {
+            
+    //         const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+    //         if (response.data.success) {
+    //             setCartItems(response.data.cartData)
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //         toast.error(error.message)
+    //     }
+    // }
+
+    const getUserCart = async (token) => {
         try {
             
-            const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+            const response = await axios.post(
+                backendUrl + '/api/cart/get',
+                {},
+                {
+                    headers: {token},
+                    timeout: 10000,
+                }
+            );
+
             if (response.data.success) {
                 setCartItems(response.data.cartData)
+            } else {
+                console.log("Error fetching cart:", response.data.message);
+                toast.error(response.data.message || "Error fetching your cart");
             }
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
+
+            console.log(error);
+            
+            if (error.code === 'ECONNABORTED') {
+                toast.error("Request timed out. Please check your connection.");
+            } else if (error.response) {
+                toast.error(error.response.data.message || "Server error");
+            } else if (error.request) {
+                toast.error("Network error. Please check your connection.");
+            } else {
+                toast.error(error.message);
+            }
+            
+            setCartItems({});
         }
     }
 
