@@ -20,14 +20,15 @@ connectDB()
 connectCloudinary()
 
 // middlewares
-app.use(express.json())
 app.use(cors({
-  origin: '*', // Or specify your domains
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'token'],
+  origin: process.env.NODE_ENV === 'production' 
+  ? [ 'https://motoswift-ecommerce-production.up.railway.app' ]
+  : ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  maxAge: 86400 // Cache preflight requests for 24 hours
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+app.use(express.json())
 
 // api endpoints
 app.use('/api/user',userRouter)
