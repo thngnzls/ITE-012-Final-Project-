@@ -1,14 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext'
 import Title from '../components/Title';
 import { assets } from '../assets/assets';
 import CartTotal from '../components/CartTotal';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
 
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
-
+  const { products, currency, cartItems, updateQuantity, token } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (token) {
+      navigate('/place-order');
+      return;
+    }
+    toast['error']('You must be logged in to proceed checkout!');
+  };
 
   useEffect(() => {
 
@@ -67,7 +77,7 @@ const Cart = () => {
         <div className='w-full sm:w-[450px]'>
           <CartTotal />
           <div className=' w-full text-end'>
-            <button onClick={() => navigate('/place-order')} className='bg-black text-white text-sm my-8 px-8 py-3'>PROCEED TO CHECKOUT</button>
+            <button onClick={ handleCheckout } className='bg-black text-white text-sm my-8 px-8 py-3'>PROCEED TO CHECKOUT</button>
           </div>
         </div>
       </div>

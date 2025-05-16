@@ -8,7 +8,7 @@ import axios from 'axios'
 
 const Verify = () => {
 
-    const { navigate, token, setCartItems, backendUrl } = useContext(ShopContext)
+    const { navigate, token, setCartItems } = useContext(ShopContext)
     const [searchParams, setSearchParams] = useSearchParams()
     
     const success = searchParams.get('success')
@@ -21,7 +21,7 @@ const Verify = () => {
                 return null
             }
 
-            const response = await axios.post(backendUrl + '/api/order/verifyStripe', { success, orderId }, { headers: { token } })
+            const response = await axios.post('/api/order/verifyStripe', { success, orderId }, { headers: { token } })
 
             if (response.data.success) {
                 setCartItems({})
