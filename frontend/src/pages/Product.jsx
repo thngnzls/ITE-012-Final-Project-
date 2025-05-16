@@ -27,13 +27,7 @@ const Product = () => {
     fetchProductData();
   }, [productId, products]);
 
-  const handleAddToCart = (productId, selectedSize) => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    addToCart(productId, selectedSize);
-  };
+  const handleAddToCart = (productId, selectedSize) => addToCart(productId, selectedSize);
 
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
