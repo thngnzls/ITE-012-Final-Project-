@@ -2,7 +2,7 @@
 
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { backendUrl, currency } from "../App"
+import { currency } from "../App"
 import { toast } from "react-toastify"
 
 const List = ({ token }) => {
@@ -27,7 +27,7 @@ const List = ({ token }) => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(backendUrl + "/api/product/list")
+      const response = await axios.get("/api/product/list")
       if (response.data.success) {
         setList(response.data.products.reverse())
       } else {
@@ -46,7 +46,7 @@ const List = ({ token }) => {
 
     try {
       setIsLoading(true)
-      const response = await axios.post(backendUrl + "/api/product/remove", { id }, { headers: { token } })
+      const response = await axios.post("/api/product/remove", { id }, { headers: { token } })
 
       if (response.data.success) {
         toast.success(response.data.message)
@@ -141,7 +141,7 @@ const List = ({ token }) => {
       if (image3) updateFormData.append("image3", image3)
       if (image4) updateFormData.append("image4", image4)
 
-      const response = await axios.post(backendUrl + "/api/product/update", updateFormData, {
+      const response = await axios.post("/api/product/update", updateFormData, {
         headers: {
           token,
           "Content-Type": "multipart/form-data",
