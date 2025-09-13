@@ -9,7 +9,6 @@ const ShopContextProvider = (props) => {
 
     const currency = '₱';
     const delivery_fee = 10;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
     const [cartItems, setCartItems] = useState({});
@@ -44,7 +43,7 @@ const ShopContextProvider = (props) => {
         if (token) {
             try {
 
-                await axios.post(backendUrl + '/api/cart/add', { itemId, size }, { headers: { token } })
+                await axios.post('/api/cart/add', { itemId, size }, { headers: { token } })
 
             } catch (error) {
                 console.log(error)
@@ -81,7 +80,7 @@ const ShopContextProvider = (props) => {
         if (token) {
             try {
 
-                await axios.post(backendUrl + '/api/cart/update', { itemId, size, quantity }, { headers: { token } })
+                await axios.post('/api/cart/update', { itemId, size, quantity }, { headers: { token } })
 
             } catch (error) {
                 console.log(error)
@@ -111,7 +110,7 @@ const ShopContextProvider = (props) => {
     const getProductsData = async () => {
         try {
 
-            const response = await axios.get(backendUrl + '/api/product/list')
+            const response = await axios.get('/api/product/list')
             if (response.data.success) {
                 setProducts(response.data.products.reverse())
             } else {
@@ -124,16 +123,39 @@ const ShopContextProvider = (props) => {
         }
     }
 
-    const getUserCart = async ( token ) => {
+    const getUserCart = async (token) => {
         try {
             
-            const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}})
+            const response = await axios.post(
+                '/api/cart/get',
+                {},
+                {
+                    headers: {token},
+                    timeout: 10000,
+                }
+            );
+
             if (response.data.success) {
                 setCartItems(response.data.cartData)
+            } else {
+                console.log("Error fetching cart:", response.data.message);
+                toast.error(response.data.message || "Error fetching your cart");
             }
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
+
+            console.log(error);
+            
+            if (error.code === 'ECONNABORTED') {
+                toast.error("Request timed out. Please check your connection.");
+            } else if (error.response) {
+                toast.error(error.response.data.message || "Server error");
+            } else if (error.request) {
+                toast.error("Network error. Please check your connection.");
+            } else {
+                toast.error(error.message);
+            }
+            
+            setCartItems({});
         }
     }
 
@@ -156,7 +178,7 @@ const ShopContextProvider = (props) => {
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart,setCartItems,
         getCartCount, updateQuantity,
-        getCartAmount, navigate, backendUrl,
+        getCartAmount, navigate,
         setToken, token
     }
 

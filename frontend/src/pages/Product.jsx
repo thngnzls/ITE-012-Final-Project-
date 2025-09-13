@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  const navigate = useNavigate();
+  const { products, currency, addToCart, user } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
-  const [showSizeChart, setShowSizeChart] = useState(false); // ✅ Add this
+  const [showSizeChart, setShowSizeChart] = useState(false);
 
   const fetchProductData = async () => {
     products.map((item) => {
@@ -26,11 +27,13 @@ const Product = () => {
     fetchProductData();
   }, [productId, products]);
 
+  const handleAddToCart = (productId, selectedSize) => addToCart(productId, selectedSize);
+
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
-      {/*----------- Product Data-------------- */}
+      {/* Product Data */}
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
-        {/*---------- Product Images------------- */}
+        {/* Product Images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
             {productData.image.map((item, index) => (
@@ -48,7 +51,7 @@ const Product = () => {
           </div>
         </div>
 
-        {/* -------- Product Info ---------- */}
+        {/* Product Info */}
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
           <div className="flex items-center gap-1 mt-2">
@@ -89,7 +92,7 @@ const Product = () => {
             </div>
           </div>
           <button
-            onClick={() => addToCart(productData._id, size)}
+            onClick={() => handleAddToCart(productData._id, size)}
             className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
           >
             ADD TO CART
@@ -103,7 +106,7 @@ const Product = () => {
         </div>
       </div>
 
-      {/* ---------- Description & Review Section ------------- */}
+      {/* Description & Review Section */}
       <div className="mt-20">
         <div className="flex">
           <b className="border px-5 py-3 text-sm">Description</b>
@@ -122,17 +125,18 @@ const Product = () => {
         </div>
       </div>
 
-      {/* --------- display related products ---------- */}
+      {/* Related Products */}
       <RelatedProducts
         category={productData.category}
         subCategory={productData.subCategory}
       />
 
-      {/* -------- Size Chart Modal -------- */}
+      {/* Size Chart Modal */}
       {showSizeChart && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-md w-[90%] max-w-lg relative shadow-lg overflow-y-auto max-h-[80vh]">
             <h2 className="text-xl font-semibold mb-4"> Size Chart</h2>
+            {/* Women Clothes */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Clothes (Women)</h3>
               <table className="w-full text-sm border">
@@ -145,40 +149,16 @@ const Product = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-2">S</td>
-                    <td className="border p-2">34-36</td>
-                    <td className="border p-2">27-29</td>
-                    <td className="border p-2">36-38</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">M</td>
-                    <td className="border p-2">37-39</td>
-                    <td className="border p-2">30-32</td>
-                    <td className="border p-2">39-41</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">L</td>
-                    <td className="border p-2">40-42</td>
-                    <td className="border p-2">33-35</td>
-                    <td className="border p-2">42-44</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">XL</td>
-                    <td className="border p-2">43-45</td>
-                    <td className="border p-2">36-38</td>
-                    <td className="border p-2">45-47</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">XXL</td>
-                    <td className="border p-2">46-48</td>
-                    <td className="border p-2">39-41</td>
-                    <td className="border p-2">48-50</td>
-                  </tr>
+                  <tr><td className="border p-2">S</td><td className="border p-2">34-36</td><td className="border p-2">27-29</td><td className="border p-2">36-38</td></tr>
+                  <tr><td className="border p-2">M</td><td className="border p-2">37-39</td><td className="border p-2">30-32</td><td className="border p-2">39-41</td></tr>
+                  <tr><td className="border p-2">L</td><td className="border p-2">40-42</td><td className="border p-2">33-35</td><td className="border p-2">42-44</td></tr>
+                  <tr><td className="border p-2">XL</td><td className="border p-2">43-45</td><td className="border p-2">36-38</td><td className="border p-2">45-47</td></tr>
+                  <tr><td className="border p-2">XXL</td><td className="border p-2">46-48</td><td className="border p-2">39-41</td><td className="border p-2">48-50</td></tr>
                 </tbody>
               </table>
             </div>
 
+            {/* Men Clothes */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Clothes (Men)</h3>
               <table className="w-full text-sm border">
@@ -190,35 +170,16 @@ const Product = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-2">S/30</td>
-                    <td className="border p-2">106</td>
-                    <td className="border p-2">73</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">M/32/32</td>
-                    <td className="border p-2">110</td>
-                    <td className="border p-2">75</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">L/34</td>
-                    <td className="border p-2">114</td>
-                    <td className="border p-2">77</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">XL/36</td>
-                    <td className="border p-2">118</td>
-                    <td className="border p-2">79</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">XXL/38</td>
-                    <td className="border p-2">122</td>
-                    <td className="border p-2">81</td>
-                  </tr>
+                  <tr><td className="border p-2">S/30</td><td className="border p-2">106</td><td className="border p-2">73</td></tr>
+                  <tr><td className="border p-2">M/32/32</td><td className="border p-2">110</td><td className="border p-2">75</td></tr>
+                  <tr><td className="border p-2">L/34</td><td className="border p-2">114</td><td className="border p-2">77</td></tr>
+                  <tr><td className="border p-2">XL/36</td><td className="border p-2">118</td><td className="border p-2">79</td></tr>
+                  <tr><td className="border p-2">XXL/38</td><td className="border p-2">122</td><td className="border p-2">81</td></tr>
                 </tbody>
               </table>
             </div>
 
+            {/* Women Shoes */}
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-2">Shoes (Women)</h3>
               <table className="w-full text-sm border">
@@ -229,30 +190,16 @@ const Product = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-2">36</td>
-                    <td className="border p-2">5.5 - 6</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">37</td>
-                    <td className="border p-2">6.5</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">38</td>
-                    <td className="border p-2">7 - 7.5</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">39</td>
-                    <td className="border p-2">8</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">40</td>
-                    <td className="border p-2">8.5 - 9</td>
-                  </tr>
+                  <tr><td className="border p-2">36</td><td className="border p-2">5.5 - 6</td></tr>
+                  <tr><td className="border p-2">37</td><td className="border p-2">6.5</td></tr>
+                  <tr><td className="border p-2">38</td><td className="border p-2">7 - 7.5</td></tr>
+                  <tr><td className="border p-2">39</td><td className="border p-2">8</td></tr>
+                  <tr><td className="border p-2">40</td><td className="border p-2">8.5 - 9</td></tr>
                 </tbody>
               </table>
             </div>
 
+            {/* Men Shoes */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Shoes (Men)</h3>
               <table className="w-full text-sm border">
@@ -263,26 +210,11 @@ const Product = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="border p-2">36</td>
-                    <td className="border p-2">4 - 4.5</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">37</td>
-                    <td className="border p-2">5</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">38</td>
-                    <td className="border p-2">5.5 - 6</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">39</td>
-                    <td className="border p-2">6.5</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">40</td>
-                    <td className="border p-2">7 - 7.5</td>
-                  </tr>
+                  <tr><td className="border p-2">36</td><td className="border p-2">4 - 4.5</td></tr>
+                  <tr><td className="border p-2">37</td><td className="border p-2">5</td></tr>
+                  <tr><td className="border p-2">38</td><td className="border p-2">5.5 - 6</td></tr>
+                  <tr><td className="border p-2">39</td><td className="border p-2">6.5</td></tr>
+                  <tr><td className="border p-2">40</td><td className="border p-2">7 - 7.5</td></tr>
                 </tbody>
               </table>
             </div>
